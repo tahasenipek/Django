@@ -19,8 +19,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-
-AUTH_USER_MODEL = 'users.CustomUser'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,18 +47,15 @@ INSTALLED_APPS = [
     'corsheaders', # CORS desteği için
     'rest_framework',
     'users',
+    'rest_framework_simplejwt',
 ]
 
-""" REST_FRAMEWORK = {
+REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
- """
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', # CORS desteği için
     'django.middleware.locale.LocaleMiddleware',
