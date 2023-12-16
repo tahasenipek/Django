@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'rest_framework_simplejwt',
+	'tournament',
 ]
 
 REST_FRAMEWORK = {
