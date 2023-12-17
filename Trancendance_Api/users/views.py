@@ -16,11 +16,9 @@ def register_user(request):
 
     if User.objects.filter(username=username).exists():
         return JsonResponse({'error': 'Bu kullanıcı adı zaten kullanımda'}, status=400)
-    # İsteği doğrulayın.
     if not username or not email or not password:
         return Response({'error': 'Lütfen tüm alanları doldurun.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Kullanıcıyı veritabanına kaydedin.
     user = User.objects.create(
         username=username,
         email=email,
