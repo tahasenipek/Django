@@ -1,11 +1,12 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth import authenticate
 
 @api_view(['POST'])
 def register_user(request):
@@ -22,16 +23,28 @@ def register_user(request):
     user = User.objects.create(
         username=username,
         email=email,
-        password= make_password(password)
+        password= make_password(password),
+        is_online=True
     )
 
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
+    return Response({'success': True, 'access_token': access_token}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def get_users(request):
+    user = request.user
+    if not user:
+        return Response({'error': 'Lütfen giriş yapın.'}, status=status.HTTP_400_BAD_REQUEST)
+    
     users = User.objects.all()
     
-    users_data = [{'id': user.id, 'username': user.username, 'is_online': user.is_online} for user in users]
-    return JsonResponse({'success': True, 'access_token': access_token, 'users': users_data}, status=201)
+    user_data = [ {'username': user.username, 'email': user.email, 'online': user.is_online} for user in users]
+
+    return Response({'success': True, 'user_data': user_data}, status=status.HTTP_200_OK)
 
 
 
@@ -44,11 +57,12 @@ def login_user(request):
 
     if not username or not password:
         return Response({'error': 'Lütfen tüm alanları doldurun.'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    if not is_correct:
+
+    user = authenticate(username=username, password=password)
+
+    if not user:
         return Response({'error': 'Kullanıcı adı veya şifre yanlış.'}, status=status.HTTP_400_BAD_REQUEST)
     
-    user = User.objects.get(username=username)
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 

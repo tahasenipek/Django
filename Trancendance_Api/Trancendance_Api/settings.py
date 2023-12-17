@@ -132,7 +132,7 @@ DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'FtDB',
-        'USER': 'postgres',
+        'USER': 'tahasenipek',
         'PASSWORD': '123',
         'HOST': 'localhost',
     }
