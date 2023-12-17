@@ -130,8 +130,8 @@ WSGI_APPLICATION = 'Trancendance_Api.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test1',
-        'USER': 'buozdemi',
+        'NAME': 'FtDB',
+        'USER': 'postgres',
         'PASSWORD': '123',
         'HOST': 'localhost',
     }

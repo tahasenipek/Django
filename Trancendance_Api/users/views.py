@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password, check_password
+from django.http import JsonResponse
 
 @api_view(['POST'])
 def register_user(request):
@@ -12,6 +13,9 @@ def register_user(request):
     email = request.data.get('email')
     password = request.data.get('password')
 
+
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({'error': 'Bu kullanıcı adı zaten kullanımda'}, status=400)
     # İsteği doğrulayın.
     if not username or not email or not password:
         return Response({'error': 'Lütfen tüm alanları doldurun.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -26,8 +30,10 @@ def register_user(request):
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
 
-    # Token'ı kullanıcıya geri döndürün.
-    return Response({'success': True, 'access_token': access_token}, status=status.HTTP_201_CREATED)
+    users = User.objects.all()
+    
+    users_data = [{'id': user.id, 'username': user.username, 'is_online': user.is_online} for user in users]
+    return JsonResponse({'success': True, 'access_token': access_token, 'users': users_data}, status=201)
 
 
 
