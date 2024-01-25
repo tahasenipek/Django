@@ -67,3 +67,4 @@ def login_user(request):
     access_token = str(refresh.access_token)
 
     return Response({'success': True, 'access_token': access_token}, status=status.HTTP_200_OK)
+
